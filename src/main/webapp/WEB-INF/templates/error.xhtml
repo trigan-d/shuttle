@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_title">
+		<h:outputText value="#{common_bundle['welcome.title']} - #{common_bundle['errorpage.title']}" />
+	</ui:define>
+
+	<ui:define name="header_data">
+		<!--greeting block-->
+		<div class="greeting-block error-page">
+			<h:outputText value="#{common_bundle['errorpage.title']}" />
+		</div>
+		<!--authorisation form block-->
+		<div class="auth-form-block">
+			<ui:include src="/WEB-INF/includes/loginLogoutForm.xhtml" />
+		</div>
+		<!--language switch-->
+		<ui:include src="/WEB-INF/includes/languageSwitcher.xhtml" />
+	</ui:define>
+
+	<ui:define name="content_data">
+		<div class="content-wrap1">
+			<div class="content-wrap2">
+				<div class="content-wrap3">
+					<div class="error-block">
+						<div>
+							<ui:insert name="error_content" />
+						</div>
+						<div class="empty-block">
+							<h:outputText value="&#160;" />
+						</div>
+						<div>
+							<a href="#" onClick="Zenbox.show(); return false;"><h:outputText
+									value="#{common_bundle['errorpage.feedback.link']}" /></a>
+							<h:outputText value="#{common_bundle['errorpage.feedback.afterLink']}" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

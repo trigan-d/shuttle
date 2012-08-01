@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is not required if you don't need any extra configuration. -->
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="         http://java.sun.com/xml/ns/javaee         http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+
+	<converter>
+		<converter-for-class>java.lang.Double</converter-for-class>
+		<converter-class>com.pepel.games.shuttle.web.converters.DoubleConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>java.lang.Enum</converter-for-class>
+		<converter-class>javax.faces.convert.EnumConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>java.math.BigDecimal</converter-for-class>
+		<converter-class>com.pepel.games.shuttle.web.converters.BigDecimalConverter</converter-class>
+	</converter>
+
+	<application>
+		<message-bundle>com.pepel.games.shuttle.web.messages.faces.Messages</message-bundle>
+		<locale-config>
+			<default-locale>ru</default-locale>
+			<supported-locale>en</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>com.pepel.games.shuttle.web.messages.common.Messages</base-name>
+			<var>common_bundle</var>
+		</resource-bundle>
+	</application>
+</faces-config>
