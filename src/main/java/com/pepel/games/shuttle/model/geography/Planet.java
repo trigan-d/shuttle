@@ -93,26 +93,14 @@ public class Planet implements Serializable, Location {
 		return id;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	@Override
 	public int getX() {
 		return x;
 	}
 
-	public void setX(int x) {
-		this.x = x;
-	}
-
 	@Override
 	public int getY() {
 		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
 	}
 
 	public String getName() {
@@ -127,16 +115,8 @@ public class Planet implements Serializable, Location {
 		return province;
 	}
 
-	public void setProvince(Province province) {
-		this.province = province;
-	}
-
 	public List<PlanetCargoAmount> getCargoAmounts() {
 		return cargoAmounts;
-	}
-
-	public void setCargoAmounts(List<PlanetCargoAmount> cargoAmounts) {
-		this.cargoAmounts = cargoAmounts;
 	}
 
 	public boolean isProvinceCapital() {

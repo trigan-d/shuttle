@@ -108,23 +108,11 @@ public class Zone implements Serializable {
 		return id;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public int getEnd() {
 		return endIndex;
 	}
 
-	public void setEnd(int end) {
-		this.endIndex = end;
-	}
-
 	public int getStart() {
 		return startIndex;
-	}
-
-	public void setStart(int start) {
-		this.startIndex = start;
 	}
 }

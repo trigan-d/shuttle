@@ -64,37 +64,27 @@ public class PlanetCargoAmount {
 
 	public PlanetCargoAmount() {
 	}
-	
-	public long getId() {
-		return id;
+
+	public PlanetCargoAmount(Planet planet, Direction direction, Cargo cargo) {
+		this.planet = planet;
+		this.direction = direction;
+		this.cargo = cargo;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public long getId() {
+		return id;
 	}
 
 	public Planet getPlanet() {
 		return planet;
 	}
 
-	public void setPlanet(Planet planet) {
-		this.planet = planet;
-	}
-
 	public Direction getDirection() {
 		return direction;
 	}
 
-	public void setDirection(Direction direction) {
-		this.direction = direction;
-	}
-
 	public Cargo getCargo() {
 		return cargo;
-	}
-
-	public void setCargo(Cargo cargo) {
-		this.cargo = cargo;
 	}
 
 	public Date getLastChange() {
