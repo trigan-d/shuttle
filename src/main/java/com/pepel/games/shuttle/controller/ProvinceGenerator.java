@@ -11,12 +11,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.pepel.games.shuttle.model.geography.Planet;
-import com.pepel.games.shuttle.model.geography.PlanetCargo;
 import com.pepel.games.shuttle.model.geography.NamedLocation;
 import com.pepel.games.shuttle.model.geography.Province;
 import com.pepel.games.shuttle.model.geography.Zone;
-import com.pepel.games.shuttle.model.geography.PlanetCargo.Direction;
 import com.pepel.games.shuttle.model.industry.Cargo;
+import com.pepel.games.shuttle.model.industry.PlanetCargoAmount.Direction;
 
 @Stateless
 public class ProvinceGenerator {
@@ -41,7 +40,8 @@ public class ProvinceGenerator {
 		Random rand = new Random();
 
 		province.setDeficit(Cargo.randomFreight(rand, null));
-		province.setProficit(Cargo.randomFreight(rand, EnumSet.of(province.getDeficit())));
+		province.setProficit(Cargo.randomFreight(rand,
+				EnumSet.of(province.getDeficit())));
 
 		province.getPlanets().add(generateCapital(province, rand));
 		for (int i = 0; i < CITIES_IN_PROVINCE; i++) {
@@ -53,9 +53,11 @@ public class ProvinceGenerator {
 	}
 
 	private Planet generateCapital(Province province, Random rand) {
-		int x = province.getX() * Province.PROVINCE_WIDTH + Province.PROVINCE_WIDTH / 4
+		int x = province.getX() * Province.PROVINCE_WIDTH
+				+ Province.PROVINCE_WIDTH / 4
 				+ rand.nextInt(Province.PROVINCE_WIDTH / 2);
-		int y = province.getY() * Province.PROVINCE_WIDTH + Province.PROVINCE_WIDTH / 4
+		int y = province.getY() * Province.PROVINCE_WIDTH
+				+ Province.PROVINCE_WIDTH / 4
 				+ rand.nextInt(Province.PROVINCE_WIDTH / 2);
 
 		Planet capital = new Planet(province, x, y, province.getName());
@@ -83,40 +85,38 @@ public class ProvinceGenerator {
 	private void generatePlanetCargos(Planet planet, Random rand) {
 		int passengersAndMailPerDay = planet.isProvinceCapital() ? PASSENGERS_AND_MAIL_PERDAY_CAPITAL
 				: PASSENGERS_AND_MAIL_PERDAY;
-		planet.getCargos().add(
-				new PlanetCargo(planet, Direction.Supply, Cargo.Passengers, passengersAndMailPerDay));
-		planet.getCargos().add(
-				new PlanetCargo(planet, Direction.Demand, Cargo.Passengers, passengersAndMailPerDay));
-		planet.getCargos().add(
-				new PlanetCargo(planet, Direction.Supply, Cargo.Mail, passengersAndMailPerDay));
-		planet.getCargos().add(
-				new PlanetCargo(planet, Direction.Demand, Cargo.Mail, passengersAndMailPerDay));
+		planet.getSupply().put(Cargo.Passengers, passengersAndMailPerDay);
+		planet.getDemand().put(Cargo.Passengers, passengersAndMailPerDay);
+		planet.getSupply().put(Cargo.Mail, passengersAndMailPerDay);
+		planet.getDemand().put(Cargo.Mail, passengersAndMailPerDay);
 
 		generatePlanetFreights(planet, rand, Direction.Supply);
 		generatePlanetFreights(planet, rand, Direction.Demand);
 	}
 
-	private void generatePlanetFreights(Planet planet, Random rand, Direction direction) {
+	private void generatePlanetFreights(Planet planet, Random rand,
+			Direction direction) {
 		int count = rand.nextInt(MAX_CARGO_TYPES)
 				+ (planet.isProvinceCapital() ? MIN_CARGO_TYPES_CAPITAL : 0);
-		
-		EnumSet<Cargo> cargos = EnumSet.of(planet.getProvince().getDeficit(), planet.getProvince()
-				.getProficit());
-		
+
+		EnumSet<Cargo> cargos = EnumSet.of(planet.getProvince().getDeficit(),
+				planet.getProvince().getProficit());
+
 		for (int i = 0; i < count; i++) {
 			Cargo cargo = Cargo.randomFreight(rand, cargos);
-			planet.getCargos().add(
-					new PlanetCargo(planet, direction, cargo, rand.nextInt(MAX_CARGO_AMOUNT)
-							+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL : 1)));
+			(direction == Direction.Supply ? planet.getSupply() : planet
+					.getDemand()).put(cargo, rand.nextInt(MAX_CARGO_AMOUNT)
+					+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL
+							: 1));
 			cargos.add(cargo);
 		}
-		
-		Cargo additional = rand.nextBoolean() ? Cargo.randomFreight(rand, cargos)
-				: (direction == Direction.Supply ? planet.getProvince().getProficit() : planet
-						.getProvince().getDeficit());
-		planet.getCargos().add(
-				new PlanetCargo(planet, direction, additional, rand.nextInt(MAX_CARGO_AMOUNT)
-						+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL : 1)));
+
+		Cargo additional = rand.nextBoolean() ? Cargo.randomFreight(rand,
+				cargos) : (direction == Direction.Supply ? planet.getProvince()
+				.getProficit() : planet.getProvince().getDeficit());
+		(direction == Direction.Supply ? planet.getSupply() : planet
+				.getDemand()).put(additional, rand.nextInt(MAX_CARGO_AMOUNT)
+				+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL : 1));
 	}
 
 	private double getMinDistance(int x, int y, List<Planet> planets) {

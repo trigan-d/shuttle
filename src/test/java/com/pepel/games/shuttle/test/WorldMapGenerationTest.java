@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.pepel.games.shuttle.controller.AvailableProvinceProvider;
 import com.pepel.games.shuttle.controller.PlanetsManager;
 import com.pepel.games.shuttle.controller.CommonEntityManager;
+import com.pepel.games.shuttle.model.geography.Planet;
 import com.pepel.games.shuttle.model.geography.Province;
 import com.pepel.games.shuttle.model.geography.Province_;
 import com.pepel.games.shuttle.model.geography.Zone;
@@ -37,7 +38,7 @@ public class WorldMapGenerationTest {
 						"com.pepel.games.shuttle.model", "com.pepel.games.shuttle.util")
 				.addAsLibraries(
 						DependencyResolvers.use(MavenDependencyResolver.class)
-								.artifacts("com.google.guava:guava:12.0").resolveAsFiles())
+								.artifacts("com.google.guava:guava:12.0", "com.google.code.gson:gson:2.2.2").resolveAsFiles())
 				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
 				.addAsResource("test-system.properties",
 						"com/pepel/games/shuttle/system.properties")
@@ -84,8 +85,9 @@ public class WorldMapGenerationTest {
 		Province province = availableProvinceProvider.getProvinceForRegistration();
 		System.out.println("admin registered");
 
-		Thread.sleep(20000);
-/*
+		//Thread.sleep(5000);
+		//System.out.println("demand 74= " + cem.find(Planet.class, 74).getDemand().toString());
+
 		Future<?> submit = null;
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 		Thread.sleep(10000);
@@ -109,6 +111,6 @@ public class WorldMapGenerationTest {
 		submit.get();
 		System.out.println("everybody registered");
 		Thread.sleep(40000);
-*/
+
 	}
 }

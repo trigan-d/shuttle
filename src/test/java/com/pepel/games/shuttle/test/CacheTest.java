@@ -27,7 +27,7 @@ public class CacheTest {
 						"com.pepel.games.shuttle.model", "com.pepel.games.shuttle.util")
 				.addAsLibraries(
 						DependencyResolvers.use(MavenDependencyResolver.class)
-								.artifacts("com.google.guava:guava:12.0").resolveAsFiles())
+								.artifacts("com.google.guava:guava:12.0", "com.google.code.gson:gson:2.2.2").resolveAsFiles())
 				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
 				.addAsResource("test-system.properties",
 						"com/pepel/games/shuttle/system.properties")

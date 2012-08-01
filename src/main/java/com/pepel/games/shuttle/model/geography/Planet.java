@@ -1,8 +1,13 @@
 package com.pepel.games.shuttle.model.geography;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +19,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.pepel.games.shuttle.model.industry.Cargo;
+import com.pepel.games.shuttle.model.industry.PlanetCargoAmount;
 
 @Entity
 @Table(name = "planets")
@@ -27,6 +38,10 @@ import com.google.common.collect.Lists;
 		"x", "y" }))
 public class Planet implements Serializable, Location {
 	private static final long serialVersionUID = 7474122973140247977L;
+
+	private static final Gson gson = new Gson();
+	private static final Type cargoAmountsType = new TypeToken<HashMap<Cargo, Integer>>() {
+	}.getType();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +68,13 @@ public class Planet implements Serializable, Location {
 	private boolean isProvinceCapital;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "planet", cascade = CascadeType.PERSIST)
-	private List<PlanetCargo> cargos;
+	private List<PlanetCargoAmount> cargoAmounts;
+
+	@Transient
+	private EnumMap<Cargo, Integer> supply;
+
+	@Transient
+	private EnumMap<Cargo, Integer> demand;
 
 	public Planet() {
 	}
@@ -63,7 +84,9 @@ public class Planet implements Serializable, Location {
 		this.x = x;
 		this.y = y;
 		this.name = name;
-		cargos = Lists.newArrayList();
+		cargoAmounts = Lists.newArrayList();
+		supply = Maps.newEnumMap(Cargo.class);
+		demand = Maps.newEnumMap(Cargo.class);
 	}
 
 	public long getId() {
@@ -108,12 +131,12 @@ public class Planet implements Serializable, Location {
 		this.province = province;
 	}
 
-	public List<PlanetCargo> getCargos() {
-		return cargos;
+	public List<PlanetCargoAmount> getCargoAmounts() {
+		return cargoAmounts;
 	}
 
-	public void setCargos(List<PlanetCargo> cargos) {
-		this.cargos = cargos;
+	public void setCargoAmounts(List<PlanetCargoAmount> cargoAmounts) {
+		this.cargoAmounts = cargoAmounts;
 	}
 
 	public boolean isProvinceCapital() {
@@ -122,5 +145,39 @@ public class Planet implements Serializable, Location {
 
 	public void setProvinceCapital(boolean isProvinceCapital) {
 		this.isProvinceCapital = isProvinceCapital;
+	}
+
+	public EnumMap<Cargo, Integer> getSupply() {
+		return supply;
+	}
+
+	public EnumMap<Cargo, Integer> getDemand() {
+		return demand;
+	}
+
+	@Column(name = "supply")
+	@Access(AccessType.PROPERTY)
+	@SuppressWarnings("unused")
+	private String getSupplyAsString() {
+		return gson.toJson(supply);
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void setSupplyAsString(String supplyAsString) {
+		supply = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(
+				supplyAsString, cargoAmountsType));
+	}
+
+	@Column(name = "demand")
+	@Access(AccessType.PROPERTY)
+	@SuppressWarnings("unused")
+	private String getDemandAsString() {
+		return gson.toJson(demand);
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void setDemandAsString(String demandAsString) {
+		demand = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(
+				demandAsString, cargoAmountsType));
 	}
 }
