@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
+//TODO: delete it
 public class CargoAmount implements Serializable {
 	private final Cargo cargo;
 	private final double amount;
