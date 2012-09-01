@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_body">
+		<pm:view id="home">
+			<pm:header title="#{common_bundle['home.title']}" />
+			<pm:content>
+				<div>
+					Welcome, motherfucker! Your login is
+					<h:outputText value="#{currentPlayer.name}" />
+				</div>
+				<div>
+					<h:link value="Private page" outcome="/private" />
+					<br />
+					<h:link value="About page" outcome="/about" />
+					<br />
+				</div>
+			</pm:content>
+			<pm:footer>
+				<h:form>
+					<h:commandLink styleClass="fl" action="#{identity.logout}"
+						value="#{common_bundle['auth.doLogout']}" />
+					<h:link styleClass="fr" rendered="#{not currentPlayer.saved}"
+						value="#{common_bundle['auth.doSave']}" outcome="/save" />
+				</h:form>
+				<br />
+			</pm:footer>
+		</pm:view>
+	</ui:define>
+</ui:composition>

@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
+import org.jboss.solder.core.Veto;
 
 import com.google.common.collect.Lists;
 import com.pepel.games.shuttle.model.industry.Cargo;
@@ -27,6 +28,7 @@ import com.pepel.games.shuttle.model.industry.Cargo;
 @org.hibernate.annotations.Table(appliesTo = "provinces", indexes = {
 		@Index(name = "idx_provinces_xy", columnNames = { "x", "y" }),
 		@Index(name = "idx_provinces_occupied", columnNames = { "occupied", "id" }) })
+@Veto
 public class Province implements Serializable, Location {
 	private static final long serialVersionUID = 7474122973140247977L;
 	public static final int PROVINCE_WIDTH = 100;

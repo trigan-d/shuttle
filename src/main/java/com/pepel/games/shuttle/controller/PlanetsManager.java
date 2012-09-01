@@ -61,9 +61,9 @@ public class PlanetsManager {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void printProvince(Planet planet) {
 		planet = em.merge(planet);
-		//System.out.println(planet.getProvince());
-		System.out.println(planet.getProvince().getId());		
-		System.out.println(planet.getProvince().getName());		
+		// System.out.println(planet.getProvince());
+		System.out.println(planet.getProvince().getId());
+		System.out.println(planet.getProvince().getName());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -76,6 +76,7 @@ public class PlanetsManager {
 						cb.equal(province.get(Province_.y), y)))));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Planet> getPlanetsInSquare(Location squareCenter, int radius) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Planet> criteria = cb.createQuery(Planet.class);

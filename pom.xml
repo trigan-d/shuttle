@@ -12,44 +12,56 @@
 
 	<repositories>
 		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>prime-repo</id>
 			<name>PrimeFaces Maven Repository</name>
 			<url>http://repository.primefaces.org</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<properties>
 		<!-- Explicitly declaring the source encoding eliminates the following 
 			message: -->
 		<!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
 			resources, i.e. build is platform dependent! -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any 
-			dependencies from org.jboss.spec will have their version defined by this 
-			BOM -->
-		<javaee6.web.spec.version>2.0.0.Final</javaee6.web.spec.version>
-		<!-- Alternatively, comment out the above line, and un-comment the line 
-			below to use version 3.0.0.Beta1-redhat-1 which is a release certified to 
-			work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven 
-			repository. -->
-		<!-- <javaee6.web.spec.version>3.0.0.Beta1-redhat-1</javaee6.web.spec.version> -->
 
-		<flyway.placeholders.superuser.login>tester</flyway.placeholders.superuser.login>
-		<flyway.placeholders.superuser.password>test</flyway.placeholders.superuser.password>
+		<seam.version>3.1.0.Final</seam.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
-				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
-				of artifacts. We use this here so that we always get the correct versions 
-				of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can read this 
-				as the JBoss stack of the Java EE Web Profile 6 APIs) -->
 			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-web-6.0</artifactId>
-				<version>${javaee6.web.spec.version}</version>
+				<groupId>org.jboss.seam</groupId>
+				<artifactId>seam-bom</artifactId>
+				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -71,47 +83,17 @@
 	</dependencyManagement>
 
 	<dependencies>
-
-		<!-- First declare the APIs we depend on and need for compilation. All 
-			of them are provided by JBoss AS 7 -->
-
-		<!-- Import the CDI API, we use provided scope as the API is included in 
-			JBoss AS 7 -->
 		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-6.0</artifactId>
+			<type>pom</type>
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Import the Common Annotations API (JSR-250), we use provided scope 
-			as the API is included in JBoss AS 7 -->
 		<dependency>
-			<groupId>org.jboss.spec.javax.annotation</groupId>
-			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the JAX-RS API, we use provided scope as the API is included 
-			in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the JPA API, we use provided scope as the API is included in 
-			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the EJB API, we use provided scope as the API is included in 
-			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -121,7 +103,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.2.0.Final</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -131,8 +112,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- Now we declare any tools needed -->
-
 		<!-- Annotation processor to generate the JPA 2.0 metamodel classes for 
 			typesafe criteria queries -->
 		<dependency>
@@ -140,6 +119,14 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>1.1.1.Final</version>
 			<scope>provided</scope>
+			<!-- Excluded Hibernate-provided JPA API because it's provided by the 
+				Java EE 6 dependencies -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate.javax.persistence</groupId>
+					<artifactId>hibernate-jpa-2.0-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Needed for running tests (you may also use TestNG) -->
@@ -170,33 +157,11 @@
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
 			<version>3.5.6-Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>2.3.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>2.3.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.spec.javax.faces</groupId>
-			<artifactId>jboss-jsf-api_2.0_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -205,11 +170,18 @@
 			<artifactId>postgresql</artifactId>
 			<version>9.1-901.jdbc4</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>3.0.1</version>
+			<version>3.3.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces-mobile</artifactId>
+			<version>0.9.3</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -219,6 +191,44 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<!-- Seam 3 dependencies -->
+
+		<dependency>
+			<groupId>org.jboss.solder</groupId>
+			<artifactId>solder-impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.seam.faces</groupId>
+			<artifactId>seam-faces</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.seam.security</groupId>
+			<artifactId>seam-security</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ocpsoft</groupId>
+			<artifactId>ocpsoft-pretty-time</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ocpsoft</groupId>
+			<artifactId>prettyfaces-jsf2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -250,11 +260,6 @@
 					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 					<!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
 					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<archive>
-						<manifestEntries>
-							<Dependencies>org.apache.httpcomponents</Dependencies>
-						</manifestEntries>
-					</archive>
 				</configuration>
 			</plugin>
 			<!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
@@ -315,7 +320,7 @@
 			</build>
 			<properties>
 				<application.url>http://localhost:8080/shuttle</application.url>
-				<face.project.stage>Development</face.project.stage>
+				<faces.project.stage>Development</faces.project.stage>
 				<application.war.name>shuttle</application.war.name>
 				<db.connection.url>jdbc:postgresql://localhost:5432/shuttle_dev</db.connection.url>
 				<db.connection.user>postgres</db.connection.user>
@@ -338,7 +343,7 @@
 			</build>
 			<properties>
 				<application.url>http://shuttle.mobi</application.url>
-				<face.project.stage>Production</face.project.stage>
+				<faces.project.stage>Production</faces.project.stage>
 				<application.war.name>ROOT</application.war.name>
 				<db.connection.url>jdbc:postgresql://localhost:5432/shuttle</db.connection.url>
 				<db.connection.user>postgres</db.connection.user>
@@ -348,39 +353,6 @@
 
 
 		<profile>
-			<!-- We add the JBoss repository as we need the JBoss AS connectors for 
-				Arquillian -->
-			<repositories>
-				<!-- The JBoss Community public repository is a composite repository 
-					of several major repositories -->
-				<!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
-				<repository>
-					<id>jboss-public-repository</id>
-					<name>JBoss Repository</name>
-					<url>http://repository.jboss.org/nexus/content/groups/public</url>
-					<!-- These optional flags are designed to speed up your builds by reducing 
-						remote server calls -->
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>jboss-public-repository</id>
-					<name>JBoss Repository</name>
-					<url>http://repository.jboss.org/nexus/content/groups/public</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-
 			<!-- An optional Arquillian testing profile that executes tests in your 
 				JBoss AS instance -->
 			<!-- This profile will start a new JBoss AS instance, and execute the 
@@ -406,77 +378,5 @@
 				</testResources>
 			</build>
 		</profile>
-
-		<profile>
-			<!-- We add the JBoss repository as we need the JBoss AS connectors for 
-				Arquillian -->
-			<repositories>
-				<!-- The JBoss Community public repository is a composite repository 
-					of several major repositories -->
-				<!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
-				<repository>
-					<id>jboss-public-repository</id>
-					<name>JBoss Repository</name>
-					<url>http://repository.jboss.org/nexus/content/groups/public</url>
-					<!-- These optional flags are designed to speed up your builds by reducing 
-						remote server calls -->
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>jboss-public-repository</id>
-					<name>JBoss Repository</name>
-					<url>http://repository.jboss.org/nexus/content/groups/public</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-
-			<!-- An optional Arquillian testing profile that executes tests in a remote 
-				JBoss AS instance -->
-			<!-- Run with: mvn clean test -Parq-jbossas-remote -->
-			<id>arq-jbossas-remote</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.jboss.as</groupId>
-					<artifactId>jboss-as-arquillian-container-remote</artifactId>
-					<version>7.1.0.Final</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when 
-				invoking mvn. -->
-			<!-- Use this profile for any OpenShift specific customization your app 
-				will need. -->
-			<!-- By default that is to put the resulting archive into the 'deployments' 
-				folder. -->
-			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-			<id>openshift</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.1.1</version>
-						<configuration>
-							<outputDirectory>deployments</outputDirectory>
-							<warName>ROOT</warName>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
 	</profiles>
 </project>

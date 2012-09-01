@@ -9,7 +9,7 @@
 		<properties>
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.id.new_generator_mappings" value="true" />			
             <!-- Only format when you need to debug, because it slows things down -->
             <property name="hibernate.format_sql" value="true"/>

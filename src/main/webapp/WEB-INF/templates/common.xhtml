@@ -1,83 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="#{localeHolder.language}" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
-<f:view locale="#{localeHolder.locale}" />
-<h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link type="image/x-icon" rel="shortcut icon"
-		href="#{request.contextPath}/resources/images/favicon.ico" />
-	<h:outputStylesheet name="css/style.css" />
-	<!--[if lt IE 9]>
-			<script type="text/javascript" src="js/html5.js"></script>
-		<![endif]-->
-	<h:outputScript library="primefaces" name="jquery/jquery.js" />
-	<h:outputScript library="js" name="jqtransform.js" />
-	<script type="text/javascript">$(function(){ $('form').jqTransform({imgPath:'art'}); });</script>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
 
-	<title><ui:insert name="page_title" /></title>
-</h:head>
-
-<h:body>
-	<p:growl globalOnly="true" />
-
-	<!--body wrapper-->
-	<div class="body-wrapper">
-
-		<!--header-->
-		<header>
-		<div class="wrapper1">
-			<div class="wrapper2">
-				<!--logo-->
-				<div class="logo">
-					<h:link outcome="/index">
-						<h:graphicImage value="#{resource['images:logo.gif']}" />
-					</h:link>
-				</div>
-
-				<!--right panel-->
-				<div class="right-panel">
-					<ui:insert name="header_data" />
-				</div>
-			</div>
-		</div>
-		</header>
-
-		<!--content-->
-		<section class="content"> <ui:insert name="content_data" /> </section>
-
-		<div class="empty-block">
-			<h:outputText value="&#160;" />
-		</div>
-	</div>
-
-	<!--footer-->
-	<footer>
-	<div class="footer-wrap">
-		<div class="text1">&copy; 2012 Overmobile.ru</div>
-		<div class="text2">
-			<h:link outcome="/terms" value="#{common_bundle['terms.of.use']}" />
-		</div>
-		<div class="text3">
-			<h:outputText value="#{common_bundle['about.us']}" />
-			- <a>company.overmobile.ru</a>
-		</div>
-	</div>
-	</footer>
-
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-32197744-1']);
-		_gaq.push(['_trackPageview']);
-
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
-</h:body>
-</html>
+	<pm:page title="#{common_bundle['page.title']}"
+		viewport="width=device-width, initial-scale=1, target-densitydpi=device-dpi">
+		<h:outputStylesheet name="css/style.css" />
+		<f:facet name="config">$.mobile.buttonMarkup.hoverDelay = 0;$.mobile.defaultDialogTransition = 'none';$.mobile.defaultPageTransition = 'none';</f:facet>
+		<ui:insert name="page_body" />
+	</pm:page>
+</f:view>

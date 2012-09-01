@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.jboss.solder.core.Veto;
+
 import com.google.common.collect.Lists;
 import com.pepel.games.shuttle.util.NamingUtils;
 
@@ -20,6 +22,7 @@ import static com.google.common.base.Preconditions.*;
 
 @Entity
 @Table(name = "zones")
+@Veto
 public class Zone implements Serializable {
 	private static final long serialVersionUID = 7474122973140247977L;
 

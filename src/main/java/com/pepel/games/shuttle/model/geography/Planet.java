@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
+import org.jboss.solder.core.Veto;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,11 +31,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pepel.games.shuttle.model.industry.Cargo;
 import com.pepel.games.shuttle.model.industry.PlanetCargoAmount;
+import com.pepel.games.shuttle.model.industry.PlanetCargoAmount.Direction;
+import com.pepel.games.shuttle.model.ports.Port;
+import com.pepel.games.shuttle.util.TimeUtils;
 
 @Entity
 @Table(name = "planets")
 @org.hibernate.annotations.Table(appliesTo = "planets", indexes = @Index(name = "idx_planets_xy", columnNames = {
 		"x", "y" }))
+@Veto
 public class Planet implements Serializable, Location {
 	private static final long serialVersionUID = 7474122973140247977L;
 
@@ -67,7 +71,7 @@ public class Planet implements Serializable, Location {
 	@Column(name = "is_province_capital")
 	private boolean isProvinceCapital;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "planet", cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "planet")
 	private List<PlanetCargoAmount> cargoAmounts;
 
 	@Transient
@@ -75,6 +79,9 @@ public class Planet implements Serializable, Location {
 
 	@Transient
 	private EnumMap<Cargo, Integer> demand;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "planet")
+	private List<Port> ports;
 
 	public Planet() {
 	}
@@ -87,6 +94,63 @@ public class Planet implements Serializable, Location {
 		cargoAmounts = Lists.newArrayList();
 		supply = Maps.newEnumMap(Cargo.class);
 		demand = Maps.newEnumMap(Cargo.class);
+	}
+
+	@Column(name = "supply")
+	@Access(AccessType.PROPERTY)
+	@SuppressWarnings("unused")
+	private String getSupplyAsString() {
+		return gson.toJson(supply);
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void setSupplyAsString(String supplyAsString) {
+		supply = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(supplyAsString,
+				cargoAmountsType));
+	}
+
+	@Column(name = "demand")
+	@Access(AccessType.PROPERTY)
+	@SuppressWarnings("unused")
+	private String getDemandAsString() {
+		return gson.toJson(demand);
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void setDemandAsString(String demandAsString) {
+		demand = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(demandAsString,
+				cargoAmountsType));
+	}
+
+	public int getRealAmount(Direction direction, Cargo cargo) {
+		Integer increment = (direction == Direction.Supply ? supply : demand).get(cargo);
+		PlanetCargoAmount oldAmount = null;
+		for (PlanetCargoAmount amount : cargoAmounts) {
+			if (amount.getDirection() == direction && amount.getCargo() == cargo) {
+				oldAmount = amount;
+				break;
+			}
+		}
+
+		if (oldAmount == null) {
+			return increment == null ? 0 : increment;
+		} else {
+			if (increment == null || increment == 0) {
+				return oldAmount.getLastAmount();
+			} else {
+				return Math
+						.min(oldAmount.getLastAmount()
+								+ (int) ((System.currentTimeMillis() - oldAmount
+										.getLastChangeTime()) / (TimeUtils.DAY_MILLIS / increment)),
+								PlanetCargoAmount.MAX_AMOUNT);
+			}
+		}
+	}
+
+	public int distanceTo(Planet other) {
+		int dX = x - other.getX();
+		int dY = y - other.getY();
+		return (int) Math.sqrt(dX * dX + dY * dY);
 	}
 
 	public long getId() {
@@ -135,29 +199,7 @@ public class Planet implements Serializable, Location {
 		return demand;
 	}
 
-	@Column(name = "supply")
-	@Access(AccessType.PROPERTY)
-	@SuppressWarnings("unused")
-	private String getSupplyAsString() {
-		return gson.toJson(supply);
-	}
-
-	@SuppressWarnings({ "unused", "unchecked" })
-	private void setSupplyAsString(String supplyAsString) {
-		supply = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(
-				supplyAsString, cargoAmountsType));
-	}
-
-	@Column(name = "demand")
-	@Access(AccessType.PROPERTY)
-	@SuppressWarnings("unused")
-	private String getDemandAsString() {
-		return gson.toJson(demand);
-	}
-
-	@SuppressWarnings({ "unused", "unchecked" })
-	private void setDemandAsString(String demandAsString) {
-		demand = Maps.newEnumMap((HashMap<Cargo, Integer>) gson.fromJson(
-				demandAsString, cargoAmountsType));
+	public List<Port> getPorts() {
+		return ports;
 	}
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<display-name>Shuttle game</display-name>
 	<context-param>
@@ -15,41 +16,16 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>com.pepel.games.shuttle.APPLICATION_URL</param-name>
-		<param-value>${application.url}</param-value>
+		<param-name>org.jboss.seam.transaction.disableListener</param-name>
+		<param-value>true</param-value>
 	</context-param>
 
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.xhtml</url-pattern>
-	</servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>index.xhtml</welcome-file>
-	</welcome-file-list>
-
-	<error-page>
-		<error-code>401</error-code>
-		<location>/errors/unauthorized.xhtml</location>
-	</error-page>
-	<error-page>
-		<error-code>404</error-code>
-		<location>/errors/notfound.xhtml</location>
-	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/errors/internalError.xhtml</location>
-	</error-page>
-	<error-page>
-		<exception-type>com.sun.faces.context.FacesFileNotFoundException</exception-type>
-		<location>/errors/notfound.xhtml</location>
-	</error-page>
-	<error-page>
-		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
-		<location>/errors/viewExpired.xhtml</location>
-	</error-page>
+	<security-constraint>
+		<display-name>Restrict direct access to XHTML files</display-name>
+		<web-resource-collection>
+			<web-resource-name>XHTML files</web-resource-name>
+			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
 </web-app>
