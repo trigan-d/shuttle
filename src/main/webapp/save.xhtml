@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_body">
+		<pm:view id="save">
+			<pm:header title="#{common_bundle['save.title']}" />
+			<pm:content>
+				<h:outputText value="#{common_bundle['save.content']}" />
+				<p:messages id="messages" globalOnly="true" />
+				<h:form id="saveForm">
+					<p:inputText id="username" value="#{playerSaver.username}"
+						validator="#{playerSaver.validateUsername}" required="true"
+						label="#{common_bundle['auth.username']}: " />
+					<p:message for="username" />
+					<p:inputText id="password" value="#{playerSaver.password}"
+						required="true" type="password"
+						label="#{common_bundle['auth.password']}: " />
+					<p:message for="password" />
+					<p:inputText id="phoneOrEmail" value="#{playerSaver.phoneOrEmail}"
+						validator="#{playerSaver.validatePhoneOrEmail}"
+						label="#{common_bundle['save.phoneOrEmail']}: " />
+					<p:message for="phoneOrEmail" />
+					<p:commandButton value="#{common_bundle['auth.doSave']}"
+						action="#{playerSaver.save}" update="@form, :messages"
+						iconPos="none" />
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</ui:define>
+</ui:composition>

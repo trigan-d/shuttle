@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_body">
+		<pm:view id="login">
+			<pm:header title="#{common_bundle['welcome.title']}" />
+			<pm:content>
+				<h:form id="welcomeForm">
+					<h:outputText value="#{common_bundle['reg.invitation']}" />
+					<p:commandButton value="#{common_bundle['reg.apply']}"
+						action="#{playerRegistrator.registerNewbie}"
+						update="@form, :messages" iconPos="none" />
+				</h:form>
+
+				<p:messages id="messages" globalOnly="true" />
+				<h:form id="loginForm">
+					<p:inputText id="username" value="#{credentials.username}"
+						required="true" label="#{common_bundle['auth.username']}: " />
+					<p:message for="username" />
+					<p:inputText id="password" value="#{credentials.password}"
+						required="true" type="password"
+						label="#{common_bundle['auth.password']}: " />
+					<p:message for="password" />
+					<p:commandButton value="#{common_bundle['auth.doLogin']}"
+						action="#{identity.login}" update="@form, :messages"
+						iconPos="none" />
+				</h:form>
+
+				<p:button href="#about" value="#{common_bundle['about.title']}"
+					icon="info" />
+			</pm:content>
+		</pm:view>
+
+		<pm:view id="about">
+			<pm:header title="#{common_bundle['about.title']}">
+				<f:facet name="left">
+					<p:button value="Back" icon="back"
+						href="#{identity.loggedIn ? '/' : '#login'}" />
+				</f:facet>
+			</pm:header>
+			<pm:content>
+				<h:outputText value="#{common_bundle['about.content']}" />
+			</pm:content>
+		</pm:view>
+	</ui:define>
+</ui:composition>

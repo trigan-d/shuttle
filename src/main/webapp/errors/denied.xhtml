@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_body">
+		<pm:view id="error">
+			<pm:header title="#{common_bundle['error.title']}">
+				<f:facet name="left">
+					<p:button value="Back" icon="back" href="/" />
+				</f:facet>
+			</pm:header>
+			<pm:content>
+				<h:outputText value="#{common_bundle['error.denied']}" />
+			</pm:content>
+		</pm:view>
+	</ui:define>
+</ui:composition>

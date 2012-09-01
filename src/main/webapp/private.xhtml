@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	template="/WEB-INF/templates/common.xhtml">
+
+	<ui:define name="page_body">
+		<pm:view id="welcome">
+			<pm:header title="#{common_bundle['welcome.title']}" />
+			<pm:content>
+				<span>This is a private page</span>
+				<div>
+					<h:link value="Home page" outcome="/home"/>
+					<h:link value="About page" outcome="/about"/>
+				</div>
+			</pm:content>
+		</pm:view>
+	</ui:define>
+</ui:composition>
