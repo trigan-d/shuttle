@@ -25,11 +25,11 @@ public class ProvinceGenerator {
 	private static final int PASSENGERS_AND_MAIL_PERDAY = 2;
 	private static final int PASSENGERS_AND_MAIL_PERDAY_CAPITAL = 4;
 
-	private static final int MAX_CARGO_TYPES = 2;
-	private static final int MIN_CARGO_TYPES_CAPITAL = 3;
+	private static final int MAX_FREIGHT_TYPES = 2;
+	private static final int MIN_FREIGHT_TYPES_CAPITAL = 3;
 
-	private static final int MAX_CARGO_AMOUNT = 3;
-	private static final int MIN_CARGO_AMOUNT_CAPITAL = 2;
+	private static final int MAX_FREIGHT_AMOUNT = 3;
+	private static final int MIN_FREIGHT_AMOUNT_CAPITAL = 2;
 
 	@Inject
 	private EntityManager em;
@@ -43,7 +43,7 @@ public class ProvinceGenerator {
 		province.setProficit(Cargo.randomFreight(rand, EnumSet.of(province.getDeficit())));
 
 		province.getPlanets().add(generateCapital(province, rand));
-		for (int i = 0; i < CITIES_IN_PROVINCE; i++) {
+		for (int i = 1; i <= CITIES_IN_PROVINCE; i++) {
 			province.getPlanets().add(generatePlanet(province, rand, i));
 		}
 
@@ -92,8 +92,8 @@ public class ProvinceGenerator {
 	}
 
 	private void generatePlanetFreights(Planet planet, Random rand, Direction direction) {
-		int count = rand.nextInt(MAX_CARGO_TYPES)
-				+ (planet.isProvinceCapital() ? MIN_CARGO_TYPES_CAPITAL : 0);
+		int count = rand.nextInt(MAX_FREIGHT_TYPES)
+				+ (planet.isProvinceCapital() ? MIN_FREIGHT_TYPES_CAPITAL : 0);
 
 		EnumSet<Cargo> cargos = EnumSet.of(planet.getProvince().getDeficit(), planet.getProvince()
 				.getProficit());
@@ -101,8 +101,8 @@ public class ProvinceGenerator {
 		for (int i = 0; i < count; i++) {
 			Cargo cargo = Cargo.randomFreight(rand, cargos);
 			(direction == Direction.Supply ? planet.getSupply() : planet.getDemand()).put(cargo,
-					rand.nextInt(MAX_CARGO_AMOUNT)
-							+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL : 1));
+					rand.nextInt(MAX_FREIGHT_AMOUNT)
+							+ (planet.isProvinceCapital() ? MIN_FREIGHT_AMOUNT_CAPITAL : 1));
 			cargos.add(cargo);
 		}
 
@@ -110,8 +110,8 @@ public class ProvinceGenerator {
 				: (direction == Direction.Supply ? planet.getProvince().getProficit() : planet
 						.getProvince().getDeficit());
 		(direction == Direction.Supply ? planet.getSupply() : planet.getDemand()).put(additional,
-				rand.nextInt(MAX_CARGO_AMOUNT)
-						+ (planet.isProvinceCapital() ? MIN_CARGO_AMOUNT_CAPITAL : 1));
+				rand.nextInt(MAX_FREIGHT_AMOUNT)
+						+ (planet.isProvinceCapital() ? MIN_FREIGHT_AMOUNT_CAPITAL : 1));
 	}
 
 	private double getMinDistance(int x, int y, List<Planet> planets) {

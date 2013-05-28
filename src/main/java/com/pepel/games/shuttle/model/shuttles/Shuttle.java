@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
@@ -55,7 +56,6 @@ public class Shuttle implements Serializable {
 	private long departureTime;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shuttle")
-	//@orde
 	private List<Container> containers;
 
 	public Shuttle() {
@@ -108,5 +108,10 @@ public class Shuttle implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Transient
+	public double getSpeed() {
+		return 1;
 	}
 }

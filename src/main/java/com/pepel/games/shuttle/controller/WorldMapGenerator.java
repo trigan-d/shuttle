@@ -98,7 +98,7 @@ public class WorldMapGenerator {
 	private Zone generateNextZone(Zone previosZone) {
 		long id = previosZone.getId() + 1;
 		int start = previosZone.getEnd() + 1;
-		int end = previosZone.getId() == 0 ? initialZoneWidth
+		int end = previosZone.isZeroZone() ? initialZoneWidth
 				: (start + previosZone.getEnd() - previosZone.getStart());
 		Zone zone = new Zone(id, start, end);
 		cem.save(zone, true);
